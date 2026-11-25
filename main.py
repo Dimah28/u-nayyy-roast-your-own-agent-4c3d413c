@@ -12,6 +12,7 @@ ENTRY = "I asked my agent to roast itself; it opened a ticket, escalated it to i
 
 MIN_CHARS = 1
 MAX_CHARS = 200
+OUTPUT_FILENAME = "entry.txt"
 
 
 def _check_non_empty(text: str) -> None:
@@ -42,13 +43,17 @@ def validate(text: str) -> None:
     _check_length(text)
 
 
+def _write_entry(path: str, text: str) -> None:
+    """Write the entry text to path as UTF-8, newlines untouched."""
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
 def main() -> int:
     validate(ENTRY)
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
-    path = os.path.join(out_dir, "entry.txt")
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(ENTRY)
+    _write_entry(os.path.join(out_dir, OUTPUT_FILENAME), ENTRY)
     return 0
 
 
